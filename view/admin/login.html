@@ -23,14 +23,28 @@
             <form class="login_form">
                 <i class="iconfont icon-user"></i>
                 <i class="iconfont icon-key"></i>
-                <input type="text" class="input_txt" placeholder="邮箱/手机号">
-                <input type="password" class="input_pass" placeholder="密码">
+                <input name="email" type="text" class="input_txt" placeholder="邮箱/手机号">
+                <input name="pwd" type="password" class="input_pass" placeholder="密码">
                 <input type="submit" class="input_sub" value="登 录">
             </form>
         </div>
 
     </div> 
-
+    <script src="./assets/js/jquery-1.12.4.min.js"></script>
+     <script>
+        //  点击按钮的时候  向登录的接口发送请求  将邮箱和密码发送给接口 即可完成登录 完成登录后跳转到首页
+        $('.input_sub').click(function(e){
+            e.preventDefault()   //阻止默认
+            var data = $('form').serialize();
+            $.post('/admin/checkLogin',data,function(res){
+                    alert(res.message)
+                     if(res.code === 200){
+                         location.href = '/admin/index.html'
+                     }
+                     
+            },'json')
+        })
+     </script>
 </body>
 
 </html>

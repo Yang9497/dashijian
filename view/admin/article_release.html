@@ -27,28 +27,33 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题">
+                        <input name="title" type="email" class="form-control" id="inputEmail3" placeholder="文章标题">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <input type="file" id="exampleInputFile">
+                        <input name="file" type="file" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                        <select id="cateid" class="form-control" name="cateid">
+                          <!-- 这里显示分类 -->
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">文章状态：</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" name="state">
+                            <option value="已发布" selected>已发布</option>
+                            <option value="草稿">草稿</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">发布时间：</label>
                     <div class="col-sm-4">
 
@@ -61,12 +66,20 @@
                             </span>
                         </div>
                     </div>
+                </div> -->
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">文章摘要：</label>
+                    <div class="col-sm-10">
+                        <textarea name="desc" class="form-control"  placeholder="文章内容">
+                           
+                            </textarea>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="rich_content" name="content" placeholder="文章内容">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda fugiat illo nihil molestias ab. Laborum eius non atque, totam sapiente quae obcaecati assumenda ratione inventore pariatur maiores, qui libero delectus.
+                        <textarea name="text" class="form-control" id="rich_content"  placeholder="文章内容">
+                           
                             </textarea>
                     </div>
                 </div>
@@ -79,7 +92,69 @@
             </form>
         </div>
     </div>
-
+<script src="./assets/js/template-web.js"></script>
+<script id="moban" type="text/html">
+    {{each arr}}
+    <option value="{{$value.id}}">{{$value.name}}</option>
+    {{/each}}
+</script>
+ <script>
+     $.get('/getCategory',function(res){
+         console.log(res);
+         
+         var str = template('moban',{
+             arr:res
+         })
+         $('#cateid').html(str)
+     },'json')
+    //  添加文章
+    // 点击发布的时候收集表单各项数据  按照接口的要求  把数据发送给接口
+    $('.btn-success').click(function(e){
+       e.preventDefault()  //阻止默认行为，点击发布按钮的时候 不会造成表单提交
+       var fd = new FormData($('.article_form')[0]);
+    //    console.log(fd);
+       $.ajax({
+           processData:false,
+           contentType:false,
+           url:'/admin/addArticle',
+           type:'post',
+           dataType:'json',
+           data:fd,
+           success:function(res){
+                alert(res.message);
+                // 跳转到文章列表首页
+                if(res.code === 200){
+                    location.href = '/admin/article_list.html'
+                }
+                
+           }
+       })
+    })
+    // $('.btn-success').click(function (e) {
+    //         // 阻止表单提交这种默认行为
+    //         e.preventDefault();
+    //         // 使用FormData收集表单数据，也是根据表单各项的name属性来收集的
+    //         // var fd = new FormData(表单的DOM对象);
+    //         var fd = new FormData($('.article_form')[0]);
+    //         // 调用接口，实现添加即可
+    //         $.ajax({
+    //             processData: false,
+    //             contentType: false,
+    //             type: 'POST',
+    //             data: fd,
+    //             url: '/admin/addArticle',
+    //             dataType: 'json',
+    //             success: function (res) {
+    //                 // 无论成功还是失败都提示
+    //                 alert(res.message);
+    //                 if (res.code === 200) {
+    //                     // 跳转到文章列表页面
+    //                     // location.href = '/admin/article_list.html';
+    //                 }
+    //             }
+    //         });
+    //     });
+ </script>
 </body>
 
 </html>
